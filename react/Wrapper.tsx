@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
-import { useProduct } from 'vtex.product-context'
 import type { ProductTypes } from 'vtex.product-context'
+import { useProduct } from 'vtex.product-context'
 import { withToast } from 'vtex.styleguide'
 
 import AddToCartButton from './AddToCartButton'
-import { mapCatalogItemToCart, CartItem } from './modules/catalogItemToCart'
 import { AssemblyOptions } from './modules/assemblyOptions'
+import { CartItem, mapCatalogItemToCart } from './modules/catalogItemToCart'
 
 interface Props {
   isOneClickBuy: boolean
@@ -18,9 +18,9 @@ interface Props {
   text?: string
   unavailableText?: string
   onClickBehavior?:
-    | 'add-to-cart'
-    | 'go-to-product-page'
-    | 'ensure-sku-selection'
+  | 'add-to-cart'
+  | 'go-to-product-page'
+  | 'ensure-sku-selection'
   onClickEventPropagation?: 'disabled' | 'enabled'
   skuItems?: CartItem[]
   customPixelEventId?: string
@@ -104,12 +104,12 @@ const Wrapper = withToast(function Wrapper(props: Props) {
   const selectedItem = productContext?.selectedItem
   const assemblyOptions = productContext?.assemblyOptions
   const seller =
-  selectedSeller ?? getDefaultSeller(productContext?.selectedItem?.sellers)
+    selectedSeller ?? getDefaultSeller(productContext?.selectedItem?.sellers)
   const selectedQuantity =
-  productContext?.selectedQuantity != null
-  ? productContext.selectedQuantity
-  : 1
-  
+    productContext?.selectedQuantity != null
+      ? productContext.selectedQuantity
+      : 1
+
   const storeName = productContext?.product?.properties.find((property: { name: string }) => property.name === "Store")
 
   const skuItems = useMemo(
@@ -143,7 +143,7 @@ const Wrapper = withToast(function Wrapper(props: Props) {
     linkText: product?.linkText,
     productId: product?.productId,
   }
-  
+
   return (
     <AddToCartButton
       text={text}
