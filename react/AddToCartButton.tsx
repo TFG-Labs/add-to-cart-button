@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
-  FormattedMessage,
-  defineMessages,
-  useIntl
+  defineMessages, FormattedMessage, useIntl
 } from 'react-intl'
 import { Utils } from 'vtex.checkout-resources'
 import { useCssHandles } from 'vtex.css-handles'
@@ -12,10 +10,11 @@ import { useProductDispatch } from 'vtex.product-context'
 import { useRuntime } from 'vtex.render-runtime'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { Tooltip } from 'vtex.styleguide'
-
 import useMarketingSessionParams from './hooks/useMarketingSessionParams'
 import { CartItem } from './modules/catalogItemToCart'
+import removeFromList from "./queries/removeFromList.gql"
 
+import { useMutation } from 'react-apollo'
 import ContainedButton from './ContainedButton'
 
 interface ProductLink {
@@ -232,7 +231,20 @@ function AddToCartButton(props: Props) {
     }
   }
 
+  const [removeProduct] = useMutation(
+    removeFromList,
+    {
+      onCompleted: (res) => {
+
+
+        console.log(res)
+      },
+    }
+  );
+
   const handleClick = (e: React.MouseEvent) => {
+
+
     if (productContextDispatch) {
       productContextDispatch({
         type: 'SET_BUY_BUTTON_CLICKED',
@@ -248,6 +260,33 @@ function AddToCartButton(props: Props) {
     if (allSkuVariationsSelected) {
       handleAddToCart()
     }
+
+    try {
+
+      const wishlisted = JSON.parse(sessionStorage.getItem('wishlist_wishlisted') || '[]');
+      const [skuItem] = skuItems;
+      const shopperId = sessionStorage.getItem('wishlist_shopperId');
+
+      const updatedWishlisted = wishlisted.filter((item: { sku: string }) => item.sku !== skuItem.id);
+      const toDelete = wishlisted.find((item: { sku: string }) => item.sku === skuItem.id);
+
+      sessionStorage.setItem('wishlist_wishlisted', JSON.stringify(updatedWishlisted));
+
+      if (toDelete) {
+        removeProduct({
+          variables: {
+            id: toDelete.id,
+            shopperId,
+            name: 'Wishlist'
+          }
+        });
+      }
+
+    } catch (error) {
+
+      console.error(error)
+    }
+
   }
 
   /*
