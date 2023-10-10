@@ -234,10 +234,7 @@ function AddToCartButton(props: Props) {
   const [removeProduct] = useMutation(
     removeFromList,
     {
-      onCompleted: (res) => {
-
-
-        console.log(res)
+      onCompleted: (_res) => {
       },
     }
   );
